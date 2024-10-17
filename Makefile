@@ -41,7 +41,8 @@ $(1): $(arch_cf)
 	cd $(trabajo) && ghdl -m $(ops) $(2)
 	cd $(trabajo) && ghdl -r $(ops) $(2) --wave=$(resultados)/$(1).ghw
 ifeq ($(diagrama),si)
-	cd $(trabajo) && yosys -p "ghdl $(ops) $(1); prep -top $(1) $(adicional_prep) write_json -compat-int $(1).json"
+	cd $(trabajo) && ghdl --synth $(ops) --out=verilog $(1) >$(1).v  
+	cd $(trabajo) && yosys -p "prep -top $(1) $(adicional_prep) write_json -compat-int $(1).json"
 	cd $(trabajo) && netlistsvg.cmd $(1).json -o $(resultados)/$(1).svg
 endif
 endef
