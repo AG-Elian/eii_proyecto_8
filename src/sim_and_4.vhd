@@ -24,7 +24,7 @@ begin
 
   excitaciones: process
   begin
-    for i in 0 to 5 loop
+    for i in 0 to 15 loop
       ABCD <= std_logic_vector(to_unsigned(i,4));
       wait for 1 ns;
     end loop;
