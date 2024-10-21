@@ -36,13 +36,18 @@ $(resultados): | $(trabajo)
 $(arch_cf): $(arch_fuente) | $(resultados)
 	cd $(trabajo) && ghdl -i $(ops) $(arch_fuente)
 
+netlistsvg = $(let nsvg,$(shell which netlistsvg),$(if $(wildcard $(nsvg).cmd),$(nsvg).cmd,$(nsvg)))
+
 define plantilla =
 $(1): $(arch_cf)
 	cd $(trabajo) && ghdl -m $(ops) $(2)
 	cd $(trabajo) && ghdl -r $(ops) $(2) --wave=$(resultados)/$(1).ghw
 ifeq ($(diagrama),si)
-	cd $(trabajo) && yosys -p "ghdl $(ops) $(1); prep -top $(1) $(adicional_prep) write_json -compat-int $(1).json"
-	cd $(trabajo) && netlistsvg.cmd $(1).json -o $(resultados)/$(1).svg
+ifneq ($(netlistsvg),)
+	cd $(trabajo) && ghdl --synth $(ops) --out=verilog $(1) > $(1).v
+	cd $(trabajo) && yosys -p "prep -top $(1) $(adicional_prep) write_json -compat-int $(1).json" $(1).v
+	cd $(trabajo) && $(netlistsvg) $(1).json -o $(resultados)/$(1).svg
+endif
 endif
 endef
 
@@ -65,16 +70,16 @@ architecture sim of sim_$(1) is
       Y : out std_logic
     );
   end component; -- $(1)
-  signal AB : std_logic_vector (1 downto 0);
-  signal Y : std_logic;
+  signal entradas : std_logic_vector (1 downto 0);
+  signal salida : std_logic;
 begin
   -- Dispositivo bajo prueba
-  dut : $(1) port map (A=>AB(1),B=>AB(0),Y=>Y);
+  dut : $(1) port map (A=>entradas(1),B=>entradas(0),Y=>salida);
 
   excitaciones: process
   begin
-    for i in 0 to 3 loop
-      AB <= std_logic_vector(to_unsigned(i,2));
+    for i in 0 to (2**entradas'length)-1 loop
+      entradas <= std_logic_vector(to_unsigned(i,entradas'length));
       wait for 1 ns;
     end loop;
     wait for 1 ns; -- Espera extra antes de salir
