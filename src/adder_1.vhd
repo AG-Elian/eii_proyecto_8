@@ -6,8 +6,8 @@ entity adder_1 is
     A : in  std_logic;
     B : in  std_logic;
     Ci : in std_logic; -- Carry de entrada
-    Y : out std_logic; -- Carry de salida
-    Co : out  std_logic
+    Y : out std_logic; 
+    Co : out  std_logic -- Carry de salida
   );
 end adder_1;
 
