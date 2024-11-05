@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 entity alu_32bits is
   port (
@@ -13,8 +14,8 @@ end alu_32bits;
 architecture structural of alu_32bits is
   component fn_cero32bits is -- Componente cero de 32 bits
     port (
-      A,B : in std_logic_vector(31 downto 0);
-      Z   : out std_logic
+      A : in std_logic_vector(31 downto 0);
+      Y : out std_logic
     );
     end component;
   
@@ -24,12 +25,14 @@ architecture structural of alu_32bits is
       Y   : out std_logic_vector(31 downto 0)
     );
     end component;
+
   component or_32 is --Función OR con entradas y salida de 32bits
     port(
       A,B : in std_logic_vector(31 downto 0);
       Y   : out std_logic_vector(31 downto 0)
     );
   end component;
+
   component xor_32 is -- Componente XOR con entrada y salida de 32 bits
     port(
       A,B : in std_logic_vector(31 downto 0);
@@ -47,7 +50,7 @@ architecture structural of alu_32bits is
   component fn_menor_que is  -- Componente MENOR QUE con entradas de 32 bits y salida de 1 bit
     port(
       A, B : in std_logic_vector(31 downto 0);
-      con_signo : in std_logic;
+      sin_signo : in std_logic;
       Y : out std_logic
     );
     end component;
@@ -97,5 +100,5 @@ begin
   resta <= sel(0);
   menor_sin_signo <= sel(1);
   desp_con_signo <= sel(0);
-  
+
 end structural;
