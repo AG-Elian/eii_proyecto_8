@@ -12,21 +12,21 @@ architecture sim of sim_fn_menor_que is
     port (
       A : in  std_logic_vector(31 downto 0);
       B : in  std_logic_vector(31 downto 0);
-      con_signo: std_logic;
+      sin_signo: std_logic;
       Y : out std_logic
     );
   end component; -- fn_menor_que
   signal entradaA, entradaB : std_logic_vector (31 downto 0);
-  signal con_signo, salida : std_logic;
+  signal sin_signo, salida : std_logic;
 begin
   -- Dispositivo bajo prueba
-  dut : fn_menor_que port map (A=>entradaA,B=>entradaB,con_signo=>con_signo,Y=>salida);
+  dut : fn_menor_que port map (A=>entradaA,B=>entradaB,sin_signo=>sin_signo,Y=>salida);
 
   excitaciones: process
   variable aleatorio : aleatorio_t;
   begin
     for i in 0 to 4 loop
-      con_signo <= aleatorio.genera_bit;
+      sin_signo <= aleatorio.genera_bit;
       entradaA  <= aleatorio.genera_vector(32);
       entradaB  <= aleatorio.genera_vector(32);
       wait for 1 ns;
